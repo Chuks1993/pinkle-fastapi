@@ -1,0 +1,76 @@
+scalar DateTime
+# directive @auth_required on FIELD_DEFINITION
+# interface PostContent {
+# 	title: String!
+# 	content: String!
+# 	published: Boolean!
+# }
+
+# interface UserCredentials {
+# 	email: String!
+# 	password: String!
+# }
+
+type Post {
+	id: ID!
+	title: String!
+	content: String!
+	published: Boolean!
+}
+
+type User {
+	id: ID!
+	email: String!
+	createdAt: DateTime!
+}
+
+type InvalidUser {
+	message: String!
+}
+
+type Token {
+	accessToken: String!
+	tokenType: String!
+}
+
+type GetTokenResponse {
+	token: Token
+	error: String
+}
+
+input GetTokenInput {
+	email: String!
+	password: String!
+}
+
+input CreatePostInput {
+	title: String
+	content: String
+}
+
+input CreateUserInput {
+	email: String!
+	password: String!
+}
+
+type CreateUserResponse {
+	user: User
+	error: String
+}
+
+type MeResponse {
+	me: User
+	error: String
+}
+
+type Query {
+	posts: [Post]!
+	me: MeResponse!
+}
+
+# TODO: try to make inputs consistent
+type Mutation {
+	createPost(input: CreatePostInput!): Post!
+	getToken(userCredentials: GetTokenInput!): GetTokenResponse!
+	createUser(user: CreateUserInput!): CreateUserResponse!
+}
