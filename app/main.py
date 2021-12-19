@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi_jwt_auth import AuthJWT
+from fastapi import APIRouter, Depends, status, HTTPException, Response
 
 from app.database import get_db
 from starlette.datastructures import URL
@@ -27,8 +28,11 @@ app.add_middleware(
 
 # TODO: Very useful for letting me know whats going on This returns a json response and not an error which might alter functionality in client
 # @app.exception_handler(AuthJWTException)
-# def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-#     return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+    # return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid Credentials"
+    )
 
 
 app.include_router(auth.router)

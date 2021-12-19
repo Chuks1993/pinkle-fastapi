@@ -1,4 +1,3 @@
-from datetime import timedelta
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -32,9 +31,7 @@ def login(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials"
         )
     # IMPORTANT: We use db user to create token and NOT user passed in from input
-    access_token = Authorize.create_access_token(
-        subject=user.id, fresh=True, expires_time=timedelta(seconds=2)
-    )
+    access_token = Authorize.create_access_token(subject=user.id, fresh=True)
     refresh_token = Authorize.create_refresh_token(subject=user.id)
     Authorize.set_access_cookies(access_token)
     Authorize.set_refresh_cookies(refresh_token)
@@ -56,9 +53,7 @@ def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
     current_user = Authorize.get_jwt_subject()
-    new_access_token = Authorize.create_access_token(
-        subject=current_user, fresh=False, expires_time=timedelta(seconds=2)
-    )
+    new_access_token = Authorize.create_access_token(subject=current_user, fresh=False)
     Authorize.set_access_cookies(new_access_token)
     return {"msg": "successfully logged in"}
 
