@@ -9,7 +9,7 @@ from ariadne import (
 from ariadne.asgi import GraphQL
 
 from app.utils import resolve_graphql_context
-from .resolvers import post, auth
+from .resolvers import post, user
 from .scarlars import datetime_scalar
 
 
@@ -22,10 +22,8 @@ mutation = MutationType()
 query.set_field("posts", post.resolve_posts)
 mutation.set_field("createPost", post.resolve_create_post)
 
-# AUTH
-mutation.set_field("createUser", auth.resolve_create_user)
-mutation.set_field("getToken", auth.resolve_get_token)
-query.set_field("me", auth.resolve_me)
+# USER
+mutation.set_field("createUser", user.resolve_create_user)
 
 app = FastAPI()
 

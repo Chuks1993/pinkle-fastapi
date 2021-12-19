@@ -3,10 +3,11 @@ from datetime import datetime
 from typing import Optional
 
 
+# TODO: Figure out better way to get optional args
 class UserOut(BaseModel):
-    id: int
-    email: EmailStr
-    created_at: datetime
+    id: Optional[int]
+    email: Optional[EmailStr]
+    createdAt: Optional[datetime]
 
     class Config:
         orm_mode = True
@@ -17,9 +18,14 @@ class UserLogin(BaseModel):
     password: str
 
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+# TODO: I need to update this to properly reflect the tokens
+# class Token(BaseModel):
+#     accessToken: str
+# token_type: str
+
+
+class AuthResponse(BaseModel):
+    msg: str
 
 
 class TokenData(BaseModel):
