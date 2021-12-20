@@ -54,7 +54,7 @@ input CreateUserInput {
 }
 
 type CreateUserResponse {
-	user: User
+	result: User
 	error: String
 }
 
@@ -70,7 +70,6 @@ type Query {
 
 # TODO: try to make inputs consistent
 type Mutation {
-	createPost(input: CreatePostInput!): Post!
-	getToken(userCredentials: GetTokenInput!): GetTokenResponse!
-	createUser(user: CreateUserInput!): CreateUserResponse!
+	createPost(params: CreatePostInput!): Post!
+	createUser(params: CreateUserInput!): CreateUserResponse!
 }

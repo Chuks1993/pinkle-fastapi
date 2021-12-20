@@ -15,8 +15,8 @@ from ..database import SessionLocal
 
 @convert_kwargs_to_snake_case
 def resolve_posts(_, info: GraphQLResolveInfo):
-    print(info.context["request"])
-    print("hererererererere", info.context["request"].get("state")["auth"])
+    # print(info.context["request"])
+    # print("hererererererere", info.context["request"].get("state")["auth"])
     # TODO: it actually works just need to clean up check for side effects like other calls being affected
     # auth: AuthJWT = info.context["request"].get("state")["auth"]
     # auth.jwt_required()
