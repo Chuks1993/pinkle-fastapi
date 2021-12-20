@@ -14,6 +14,8 @@ from fastapi import Depends
 from . import graphql_config
 from .routers import auth
 
+# TODO: Setup poetry
+# TODO: Setup Redis
 app = FastAPI()
 
 origins = ["http://localhost:3000"]
