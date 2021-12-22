@@ -5,8 +5,9 @@ from graphql import GraphQLError
 from graphql.type import GraphQLResolveInfo
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import func
-from starlette.requests import cookie_parser
-from ..models import Post, Vote
+
+# from app.utils import query_to_dict
+from ..models import Post, Vote, User
 from ..database import SessionLocal
 
 
@@ -15,22 +16,42 @@ from ..database import SessionLocal
 
 @convert_kwargs_to_snake_case
 def resolve_posts(_, info: GraphQLResolveInfo):
-    # print(info.context["request"])
-    # print("hererererererere", info.context["request"].get("state")["auth"])
-    # TODO: it actually works just need to clean up check for side effects like other calls being affected
-    # auth: AuthJWT = info.context["request"].get("state")["auth"]
-    # auth.jwt_required()
+    search = ""
+    limit = None
+    skip = None
     db = info.context["db"]
-    posts = (
+    results = (
         db.query(Post, func.count(Vote.post_id).label("votes"))
         .join(Vote, Vote.post_id == Post.id, isouter=True)
         .group_by(Post.id)
+        .filter(Post.title.contains(search))
+        .limit(limit)
+        .offset(skip)
         .all()
     )
     db.close()
-    return posts
+    posts = []
+    # TODO: Find a better way to handle this
+    for post, votes in dict(results).items():
+        posts.append({**post.__dict__, "votes": votes})
+    # print([dict(r) for r in results])
+    # if not results:
+    #     return {"error": "Could not get the posts"}
+    return {"result": posts}
 
 
 @convert_kwargs_to_snake_case
-def resolve_create_post(self, info: GraphQLResolveInfo):
-    return "hello"
+def resolve_create_post(_, info: GraphQLResolveInfo, params):
+    auth: AuthJWT = info.context["auth"]
+    auth.jwt_required()
+    db: Session = info.context["db"]
+    post = params
+    current_user_id = auth.get_jwt_subject()
+    user = db.query(User).filter(User.id == current_user_id).first()
+    if not user:
+        return {"error": "Cant validate user"}
+    new_post = Post(author_id=current_user_id, **post)
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return {"result": new_post}

@@ -46,7 +46,18 @@ async def graphiql(request: Request):
     return await graphql_config.graphql.render_playground(request=request)
 
 
-# TODO: use cookie for refresh token
+# async def build_graphql_context(request: Request, authorization: str):
+#     return tools.DictObject(
+#         req=request,
+#         authorization=authorization,
+#     )
+
+# @app.post("/graphql")
+# async def graphql(request: Request, authorization: str = Header(None)):
+#     request_data = dict(request)
+#     ctx = await build_graphql_context(request, authorization)
+#     success, response = await gql_app.execute(request, context=ctx)
+#     return JSONResponse(content=response, status_code=200 if success else 400)
 
 
 @app.post("/graphql")

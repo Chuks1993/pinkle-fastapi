@@ -8,6 +8,7 @@ from .. import utils
 
 @convert_kwargs_to_snake_case
 def resolve_create_user(_, info: GraphQLResolveInfo, params):
+    # TODO: check if user already exists
     db = info.context["db"]
     user = params
     hashed_password = utils.hash(user["password"])

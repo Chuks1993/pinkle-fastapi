@@ -16,6 +16,8 @@ type Post {
 	title: String!
 	content: String!
 	published: Boolean!
+	votes: Int!
+	author: User!
 }
 
 type User {
@@ -63,13 +65,22 @@ type MeResponse {
 	error: String
 }
 
-type Query {
-	posts: [Post]!
-	me: MeResponse!
+type PostResponse {
+	result: [Post]
+	error: String
 }
 
+type PostsResponse {
+	result: [Post!]
+	error: String
+}
+
+type Query {
+	posts: PostsResponse!
+	me: MeResponse!
+}
 # TODO: try to make inputs consistent
 type Mutation {
-	createPost(params: CreatePostInput!): Post!
+	createPost(params: CreatePostInput!): PostResponse!
 	createUser(params: CreateUserInput!): CreateUserResponse!
 }
