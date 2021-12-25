@@ -64,7 +64,6 @@ async def graphiql(request: Request):
 async def graphql_post(
     request: Request, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
 ):
-    # TODO: How come the db is available but auth is deeply nested in the context
     request.state.db = db
     request.state.auth = Authorize
     return await graphql_config.graphql.graphql_http_server(request=request)

@@ -7,7 +7,7 @@ from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import func
 
 # from app.utils import query_to_dict
-from ..models import Post, Vote, User
+from ..models import Post, Vote, User, Comment
 from ..database import SessionLocal
 
 
@@ -21,8 +21,13 @@ def resolve_posts(_, info: GraphQLResolveInfo):
     skip = None
     db = info.context["db"]
     results = (
-        db.query(Post, func.count(Vote.post_id).label("votes"))
-        .join(Vote, Vote.post_id == Post.id, isouter=True)
+        db.query(
+            Post,
+            func.count(Vote.post_id).label("votes"),
+            func.count(Comment.post_id).label("comments"),
+        )
+        # .join(Vote, Vote.post_id == Post.id, isouter=True)
+        # .join(Comment, Comment.post_id == Post.id, isouter=True)
         .group_by(Post.id)
         .filter(Post.title.contains(search))
         .limit(limit)
@@ -32,12 +37,25 @@ def resolve_posts(_, info: GraphQLResolveInfo):
     db.close()
     posts = []
     # TODO: Find a better way to handle this
-    for post, votes in dict(results).items():
-        posts.append({**post.__dict__, "votes": votes})
+    # TODO: Truncate comments on return
+    for (
+        post,
+        votes,
+        comments,
+    ) in results:
+        posts.append(
+            {
+                **post.__dict__,
+                "votes": {"count": votes},
+                "comments": {"count": comments},
+            }
+        )
+    print(posts)
     # print([dict(r) for r in results])
-    # if not results:
-    #     return {"error": "Could not get the posts"}
+    if not results:
+        return {"error": "Could not get the posts"}
     return {"result": posts}
+    # return {"error": "hello"}
 
 
 @convert_kwargs_to_snake_case

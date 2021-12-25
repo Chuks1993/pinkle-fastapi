@@ -32,10 +32,10 @@ class Post(Base):
     updated_at = Column(
         TIMESTAMP(timezone=True), nullable=True, server_onupdate=text("now()")
     )
-    author_id = Column(
+    user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    author = relationship("User")
+    user = relationship("User")
 
 
 class Vote(Base):
@@ -48,8 +48,10 @@ class Vote(Base):
     )
 
 
+# TODO: Maybe this should be relational
 class Comment(Base):
     __tablename__ = "comments"
+    id = Column(Integer, nullable=False, primary_key=True)
     content = Column(String, nullable=False)
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
