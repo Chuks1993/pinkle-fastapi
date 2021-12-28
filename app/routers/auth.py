@@ -1,3 +1,4 @@
+from datetime import timedelta
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -77,6 +78,7 @@ def logout(Authorize: AuthJWT = Depends()):
     response_model=schemas.UserOut,
 )
 def get_me(Authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+    # TODO: When these fail they return status code 500 which is not what we need in the client
     Authorize.jwt_required()
 
     current_user_id = Authorize.get_jwt_subject()
@@ -88,7 +90,7 @@ def get_me(Authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db
             status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid Credentials"
         )
         # TODO: I definetly shouldnt and dont want to parse through the dict manually
-    return {"id": user.id, "email": user.email, "createdAt": user.created_at}
+    return {"id": user.id, "email": user.email, "createdAt": user.join_date}
 
 
 # TODO: Dont see the point of this but adding it for refrence

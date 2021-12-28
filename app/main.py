@@ -32,9 +32,7 @@ app.add_middleware(
 # @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     # return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid Credentials"
-    )
+    raise HTTPException(status_code=exc.status_code, detail=exc)
 
 
 app.include_router(auth.router)
