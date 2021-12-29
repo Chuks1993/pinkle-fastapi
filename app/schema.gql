@@ -92,7 +92,7 @@ type MeResponse {
 }
 
 type PostResponse {
-	result: [Post]
+	result: Post
 	error: String
 }
 
@@ -103,6 +103,7 @@ type PostsResponse {
 
 type Query {
 	posts: PostsResponse!
+	postById(params: String!): PostResponse!
 	me: MeResponse!
 }
 # TODO: try to make inputs consistent

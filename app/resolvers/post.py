@@ -50,7 +50,7 @@ def resolve_posts(_, info: GraphQLResolveInfo):
                 "comments": {"count": comments},
             }
         )
-    print(posts)
+    # print(posts)
     # print([dict(r) for r in results])
     if not results:
         return {"error": "Could not get the posts"}
@@ -73,3 +73,28 @@ def resolve_create_post(_, info: GraphQLResolveInfo, params):
     db.commit()
     db.refresh(new_post)
     return {"result": new_post}
+
+
+@convert_kwargs_to_snake_case
+def resolve_post_by_id(_, info: GraphQLResolveInfo, params):
+    db: Session = info.context["db"]
+    postId = params
+    res = (
+        db.query(
+            Post,
+            func.count(Vote.post_id).label("votes"),
+            func.count(Comment.post_id).label("comments"),
+        )
+        .filter(Post.id == postId)
+        .group_by(Post.id)
+        .first()
+    )
+
+    if not res:
+        return {"error": f"Cant find post with id {postId}"}
+    result = {
+        **res[0].__dict__,
+        "votes": {"count": res[1]},
+        "comments": {"count": res[2]},
+    }
+    return {"result": result}

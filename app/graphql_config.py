@@ -20,6 +20,7 @@ mutation = MutationType()
 
 # POST
 query.set_field("posts", post.resolve_posts)
+query.set_field("postById", post.resolve_post_by_id)
 mutation.set_field("createPost", post.resolve_create_post)
 
 # USER
