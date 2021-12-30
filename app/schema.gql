@@ -101,8 +101,14 @@ type PostsResponse {
 	error: String
 }
 
+input SearchPostsInput {
+	search: String
+	limit: Int
+	skip: Int
+}
+
 type Query {
-	posts: PostsResponse!
+	posts(params: SearchPostsInput): PostsResponse!
 	postById(params: String!): PostResponse!
 	me: MeResponse!
 }

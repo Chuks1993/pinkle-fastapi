@@ -15,10 +15,10 @@ from ..database import SessionLocal
 
 
 @convert_kwargs_to_snake_case
-def resolve_posts(_, info: GraphQLResolveInfo):
-    search = ""
-    limit = None
-    skip = None
+def resolve_posts(_, info: GraphQLResolveInfo, params):
+    search = params.get("search", "")
+    limit = params.get("limit")
+    skip = params.get("limit")
     db = info.context["db"]
     results = (
         db.query(
@@ -29,7 +29,7 @@ def resolve_posts(_, info: GraphQLResolveInfo):
         # .join(Vote, Vote.post_id == Post.id, isouter=True)
         # .join(Comment, Comment.post_id == Post.id, isouter=True)
         .group_by(Post.id)
-        .filter(Post.title.contains(search))
+        .filter(func.lower(Post.title).contains(search.lower()))
         .limit(limit)
         .offset(skip)
         .all()
