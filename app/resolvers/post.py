@@ -37,7 +37,7 @@ def resolve_posts(_, info: GraphQLResolveInfo, params):
     db.close()
     posts = []
     # TODO: Find a better way to handle this
-    # TODO: Truncate comments on return
+    # TODO: Truncate content on return
     for (
         post,
         votes,
