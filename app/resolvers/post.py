@@ -18,7 +18,7 @@ from ..database import SessionLocal
 def resolve_posts(_, info: GraphQLResolveInfo, params):
     search = params.get("search", "")
     limit = params.get("limit")
-    skip = params.get("limit")
+    skip = params.get("skip")
     db = info.context["db"]
     results = (
         db.query(
@@ -26,15 +26,14 @@ def resolve_posts(_, info: GraphQLResolveInfo, params):
             func.count(Vote.post_id).label("votes"),
             func.count(Comment.post_id).label("comments"),
         )
-        # .join(Vote, Vote.post_id == Post.id, isouter=True)
-        # .join(Comment, Comment.post_id == Post.id, isouter=True)
+        .join(Vote, Vote.post_id == Post.id, isouter=True)
+        .join(Comment, Comment.post_id == Post.id, isouter=True)
         .group_by(Post.id)
         .filter(func.lower(Post.title).contains(search.lower()))
         .limit(limit)
         .offset(skip)
         .all()
     )
-    print(results)
     db.close()
     posts = []
     # TODO: Find a better way to handle this
