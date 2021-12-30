@@ -1,3 +1,4 @@
+import uvicorn
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 from fastapi import FastAPI
@@ -65,3 +66,7 @@ async def graphql_post(
     request.state.db = db
     request.state.auth = Authorize
     return await graphql_config.graphql.graphql_http_server(request=request)
+
+def dev():
+    """Launched with `poetry run dev` at root level"""
+    uvicorn.run("my_package.main:app", host="0.0.0.0", port=8000, reload=True)
