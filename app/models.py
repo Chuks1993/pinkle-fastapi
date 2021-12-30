@@ -5,9 +5,6 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import BOOLEAN, TIMESTAMP
 from .database import Base
 
-# TODO: use uuid
-# id = uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
 
 class User(Base):
     __tablename__ = "users"
@@ -59,9 +56,5 @@ class Comment(Base):
     updated_at = Column(
         TIMESTAMP(timezone=True), nullable=True, server_onupdate=text("now()")
     )
-    user_id = Column(
-        Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
-    )
-    post_id = Column(
-        Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True
-    )
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))

@@ -34,6 +34,7 @@ def resolve_posts(_, info: GraphQLResolveInfo, params):
         .offset(skip)
         .all()
     )
+    print(results)
     db.close()
     posts = []
     # TODO: Find a better way to handle this
