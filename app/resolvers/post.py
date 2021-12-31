@@ -1,14 +1,10 @@
-from fastapi import Depends
 from ariadne import convert_kwargs_to_snake_case
-from sqlalchemy.orm import Session
-from graphql import GraphQLError
 from graphql.type import GraphQLResolveInfo
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import func
+from sqlalchemy.orm import Session
 
-# from app.utils import query_to_dict
 from ..models import Post, Vote, User, Comment
-from ..database import SessionLocal
 
 
 # https://github.com/tiangolo/fastapi/issues/1279
