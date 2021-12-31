@@ -76,12 +76,12 @@ input CreatePostInput {
 	content: String
 }
 
-input CreateUserInput {
+input UserData {
 	email: String!
 	password: String!
 }
 
-type CreateUserResponse {
+type UserResponse {
 	result: User
 	error: String
 }
@@ -115,5 +115,6 @@ type Query {
 # TODO: try to make inputs consistent
 type Mutation {
 	createPost(params: CreatePostInput!): PostResponse!
-	createUser(params: CreateUserInput!): CreateUserResponse!
+	createUser(params: UserData!): UserResponse!
+	updateUser(params: UserData!): UserResponse!
 }

@@ -25,6 +25,7 @@ mutation.set_field("createPost", post.resolve_create_post)
 
 # USER
 mutation.set_field("createUser", user.resolve_create_user)
+mutation.set_field("editUser", user.resolve_update_user)
 
 app = FastAPI()
 
