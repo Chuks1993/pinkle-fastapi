@@ -1,5 +1,5 @@
 from ariadne import ScalarType
-from datetime import date, datetime, time
+from datetime import datetime
 
 datetime_scalar = ScalarType("DateTime")
 

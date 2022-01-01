@@ -3,19 +3,20 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+
+# from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, Depends, status, HTTPException, Response
+from fastapi import Depends, HTTPException
 
-from app.database import get_db
+from .db.database import get_db
 from starlette.datastructures import URL
 from fastapi import Depends
 
-from . import graphql_config
-from .routers import auth
+from .core import graphql_config
+from .auth import routers
 
-# TODO: Setup poetry
+# TODO: Great resource https://pythonawesome.com/a-tiny-social-network-built-with-fastapi-and-react-rxjs/
 # TODO: Setup Redis
 app = FastAPI()
 
@@ -36,7 +37,7 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     raise HTTPException(status_code=exc.status_code, detail=exc)
 
 
-app.include_router(auth.router)
+app.include_router(routers.router)
 
 
 @app.get("/graphql")
@@ -68,6 +69,7 @@ async def graphql_post(
     return await graphql_config.graphql.graphql_http_server(request=request)
 
 
+# TODO: do I need to use if __name__ == "__main__"
 def dev():
     """Launched with `poetry run dev` at root level"""
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

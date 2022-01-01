@@ -4,8 +4,8 @@ from fastapi_jwt_auth.auth_jwt import AuthJWT
 from graphql.type import GraphQLResolveInfo
 from sqlalchemy.orm.session import Session
 
-from ..models import User
-from .. import utils
+from .models import User
+from ..shared import utils
 
 
 @convert_kwargs_to_snake_case

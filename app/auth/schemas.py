@@ -18,15 +18,5 @@ class UserLogin(BaseModel):
     password: str
 
 
-# TODO: I need to update this to properly reflect the tokens
-# class Token(BaseModel):
-#     accessToken: str
-# token_type: str
-
-
 class AuthResponse(BaseModel):
     msg: str
-
-
-class TokenData(BaseModel):
-    id: Optional[str] = None

@@ -1,20 +1,9 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.expression import null, text
+from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import BOOLEAN, TIMESTAMP
-from .database import Base
-
-
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, nullable=False, primary_key=True)
-    # TODO: make email the PK
-    email = Column(String, nullable=False, unique=True)
-    password = Column(String, nullable=False)
-    join_date = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
-    )
+from app.db.database import Base
 
 
 class Post(Base):

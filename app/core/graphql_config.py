@@ -7,13 +7,14 @@ from ariadne import (
     snake_case_fallback_resolvers,
 )
 from ariadne.asgi import GraphQL
-
-from app.utils import resolve_graphql_context
-from .resolvers import post, user
+from ..post import resolvers as post
+from ..user import resolvers as user
+from ..shared.utils import resolve_graphql_context
 from .scarlars import datetime_scalar
+from .config import settings
 
 
-type_defs = [load_schema_from_path("app/schema.gql")]
+type_defs = [load_schema_from_path("app")]
 
 query = QueryType()
 mutation = MutationType()
@@ -25,7 +26,7 @@ mutation.set_field("createPost", post.resolve_create_post)
 
 # USER
 mutation.set_field("createUser", user.resolve_create_user)
-mutation.set_field("editUser", user.resolve_update_user)
+mutation.set_field("updateUser", user.resolve_update_user)
 
 app = FastAPI()
 
@@ -42,4 +43,4 @@ schema = make_executable_schema(
 
 
 # settings.debug should be used
-graphql = GraphQL(schema, debug=True, context_value=resolve_graphql_context)
+graphql = GraphQL(schema, debug=settings.debug, context_value=resolve_graphql_context)

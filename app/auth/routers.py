@@ -1,12 +1,15 @@
-from datetime import timedelta
-from fastapi import APIRouter, Depends, status, HTTPException, Response
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from fastapi_jwt_auth import AuthJWT
 
 
-from .. import database, models, utils, config
-from . import schemas
+from .schemas import AuthResponse, UserOut
+from ..db import database
+from ..shared import utils
+from ..user import models
+from ..core import config
+
 
 router = APIRouter(tags=["Authentication"])
 
@@ -16,7 +19,7 @@ def get_config():
     return config.settings
 
 
-@router.post("/login", response_model=schemas.AuthResponse)
+@router.post("/login", response_model=AuthResponse)
 def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(database.get_db),
@@ -42,7 +45,7 @@ def login(
 # TODO: make user require a fresh token for account or sensitive data meaning they need to log back in
 
 
-@router.post("/refresh", response_model=schemas.AuthResponse)
+@router.post("/refresh", response_model=AuthResponse)
 def refresh(Authorize: AuthJWT = Depends()):
     """
     The jwt_refresh_token_required() function insures a valid refresh
@@ -59,7 +62,7 @@ def refresh(Authorize: AuthJWT = Depends()):
     return {"msg": "successfully logged in"}
 
 
-@router.delete("/logout", response_model=schemas.AuthResponse)
+@router.delete("/logout", response_model=AuthResponse)
 def logout(Authorize: AuthJWT = Depends()):
     """
     Because the JWT are stored in an httponly cookie now, we cannot
@@ -75,7 +78,7 @@ def logout(Authorize: AuthJWT = Depends()):
 @router.get(
     "/me",
     # TODO: update the schema out for this query it causes a CORS issue on the front end idk why but yeah -_-
-    response_model=schemas.UserOut,
+    response_model=UserOut,
 )
 def get_me(Authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     # TODO: When these fail they return status code 500 which is not what we need in the client

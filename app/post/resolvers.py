@@ -4,7 +4,8 @@ from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from ..models import Post, Vote, User, Comment
+from ..post.models import Post, Vote, Comment
+from ..user.models import User
 
 
 # https://github.com/tiangolo/fastapi/issues/1279

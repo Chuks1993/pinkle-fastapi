@@ -14,63 +14,6 @@ scalar DateTime
 # TODO: handle errors with
 # https://spectrum.chat/ariadne/general/how-to-return-403-405-error-relatively-in-the-circumstances~725549c0-27b3-4ea4-80da-2ee309da96a5
 
-type Post {
-	id: ID!
-	title: String!
-	content: String!
-	published: Boolean!
-	author: User!
-	# voteCount: Int!
-	votes: Votes!
-	comments: Comments!
-	# commentCount: Int!
-	createdAt: DateTime!
-	updateAt: DateTime
-}
-type Votes {
-	data: [User!]
-	count: Int!
-}
-
-type Comments {
-	data: [Comment!]
-	count: Int!
-}
-
-type Comment {
-	id: ID!
-	content: String!
-	createdAt: DateTime!
-	updateAt: DateTime
-	author: User!
-	postId: Int!
-}
-
-type User {
-	id: ID!
-	email: String!
-	createdAt: DateTime!
-}
-
-type InvalidUser {
-	message: String!
-}
-
-type Token {
-	accessToken: String!
-	tokenType: String!
-}
-
-type GetTokenResponse {
-	token: Token
-	error: String
-}
-
-input GetTokenInput {
-	email: String!
-	password: String!
-}
-
 input CreatePostInput {
 	title: String
 	content: String
