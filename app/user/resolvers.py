@@ -29,11 +29,13 @@ def resolve_update_user(_, info: GraphQLResolveInfo, params):
     auth: AuthJWT = info.context["auth"]
     auth.jwt_required()
     db: Session = info.context["db"]
-    user = params
-    hashed_password = utils.hash(user["password"])
-    user["password"] = hashed_password
-    updated_user = User(**user)
-    db.add(updated_user)
+    current_user_id = auth.get_jwt_subject()
+    user_query = db.query(User).filter(User.id == params["id"])
+    user = user_query.first()
+    if user == None:
+        return {"error": f"Unable to find user with id: {params['id']}"}
+    if user.id != current_user_id:
+        return {"error": "Not authroized to perform this request"}
+    user_query.update(params["data"], synchronize_session=False)
     db.commit()
-    db.refresh(updated_user)
-    return {"result": updated_user}
+    return {"result": user}
