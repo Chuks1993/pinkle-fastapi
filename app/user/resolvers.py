@@ -1,4 +1,3 @@
-from typing import Dict
 from ariadne import convert_kwargs_to_snake_case
 from fastapi_jwt_auth.auth_jwt import AuthJWT
 from graphql.type import GraphQLResolveInfo
@@ -38,4 +37,4 @@ def resolve_update_user(_, info: GraphQLResolveInfo, params):
         return {"error": "Not authroized to perform this request"}
     user_query.update(params["data"], synchronize_session=False)
     db.commit()
-    return {"result": user}
+    return {"result": user_query.first().__dict__}
